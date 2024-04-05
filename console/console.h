@@ -7,7 +7,7 @@ namespace console {
 // FPS
 const int FPS = 60;
 // 화면에 출력 가능한 최대 너비
-const int SCREEN_WIDTH = 25;
+const int SCREEN_WIDTH = 30;
 // 화면에 출력 가능한 최대 높이
 const int SCREEN_HEIGHT = 25;
 
