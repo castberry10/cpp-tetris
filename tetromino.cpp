@@ -13,12 +13,14 @@ Tetromino::Tetromino(std::string name, int size, std::string shape)
     { //
         for (int x = 0; x < size; x++)
         {
-            shape_[x][y] = shape[index] == 'O'; // 블록이 존재한다면 O를 통해 표시하고 아니라면 X를 통해 표시한다.
+            shape_[x][y] = (shape[index] == 'O'); // 블록이 존재한다면 O를 통해 표시하고 아니라면 X를 통해 표시한다.
             index++;
         }
     }
 }
-
+// 각 테트로미노 종류에 대한 선언
+// cpp 파일에서 Tetromino Tetromino::I(...); 와 같이 구현한다
+// static Tetromino I, O, T, S, Z, J, L;
 Tetromino Tetromino::I("I", 4, "XXXXOOOOXXXXXXXX");
 Tetromino Tetromino::O("O", 2, "OOOO");
 Tetromino Tetromino::T("T", 3, "XOXOOOXXX");
@@ -48,7 +50,7 @@ Tetromino Tetromino::rotatedCW(){
         }
     } 
     // 회전된 테트로미노의 모양을 기반으로 새로운 Tetromino 객체 생성
-    return Tetromino(name_, size_, createString);
+    return Tetromino(*this);
 }
 
 // 반시계 방향으로 회전한 모습의 테트로미노 객체를 반환한다.
@@ -72,7 +74,7 @@ Tetromino Tetromino::rotatedCCW(){
         }
     } 
     // 회전된 테트로미노의 모양을 기반으로 새로운 Tetromino 객체 생성
-    return Tetromino(name_, size_, createString);
+    return Tetromino(*this);
 }
 
 // 화면의 x, y 위치에 s 문자열로  테트로미노를 그린다
@@ -85,6 +87,3 @@ void Tetromino::drawAt(std::string s, int x, int y){
     }
 }
 // static Tetromino I =
-// 각 테트로미노 종류에 대한 선언
-// cpp 파일에서 Tetromino Tetromino::I(...); 와 같이 구현한다
-// static Tetromino I, O, T, S, Z, J, L;
