@@ -20,8 +20,12 @@ private:
   // 게임 상태
   int gamestate;
   
+  
   // hold된 테트로미노
   int holdTetromino;
+
+  // hold 가능 여부
+  bool canHold;
 
   // 현재 테트로미노
   int currentTetromino;
@@ -31,35 +35,63 @@ private:
 
   // 테트로미노의 Y 좌표
   int currentTetrominoY;
+
+  // 현재 테트로미노 
+  Tetromino currentTetrominoObject;
+
+  // 다음 테트로미노
+  Tetromino nextTetrominoObject;
+
+  //홀드된 테트로미노
+  Tetromino holdTetrominoObject;
   
   // 테트로미노 종류 -> 7개 (0 ~ 6)
-  enum tetromino { I, O, T, S, Z, J, L };
-
-  // 지금까지 지운 라인의 개수
-  int eraseLine;
-
-public:
-
+  enum tetrominoTypes { I, O, T, S, Z, J, L };
+  
   // 키값을 받고 이벤트 처리를 한다. 
   void keyEvent();
 
-  // 게임의 한 프레임을 처리한다.
-  void update();
-
-  // 게임 화면을 그린다.
-  void draw();
-
-  // 게임 루프가 종료되어야 하는지 여부를 반환한다.
-  bool shouldExit();
-
+  // 지금까지 지운 라인의 개수
+  int eraseLine;
+  
+  // 홀드된 테트로미노
+  void drawHoldTetromino();
+  
+  // 테트로미노 생성
+  void createTetromino();
+  
   // 지워진 라인 개수를 그린다.
   void drawEraseLine();
+
+  // 라인이 꽉 찼는지 확인하고 지운다.
+  void checkLine();
 
   // 현재 시간을 그린다.
   void drawTime();
 
   // 게임 끝 (n = 0: 승리, n = 1: 패배)
   void drawEnd(int n);
+
+// 게임 루프가 종료되어야 하는지 여부를 반환한다.
+  void drawShadowTetromino();
+
+  // 테트로미노 맨 아래로 이동
+  void hardDrop();
+
+  // 테트로미노가 바닥에 닿았는지 확인
+  void checkTetromino(Tetromino t, int x, int y);
+
+
+public:
+  // 게임의 한 프레임을 처리한다.
+  void update();
+  
+  // 게임 화면을 그린다.
+  void draw();
+
+  // 게임 루프가 종료되어야 하는지 여부를 반환한다.
+  bool shouldExit();
+
 
   //생성자
   Game();

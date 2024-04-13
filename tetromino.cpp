@@ -1,6 +1,6 @@
 #include "tetromino.h"
 #include <iostream>
-#include "console.h"
+#include "console/console.h"
 
 // Tetromino I("I", 4, "XXXXOOOOXXXXXXXX")
 Tetromino::Tetromino(std::string name, int size, std::string shape)
