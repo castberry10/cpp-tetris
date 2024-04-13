@@ -14,57 +14,40 @@ Game::Game(){
 
 // 게임의 한 프레임을 처리한다.
 void Game::update(){
-  // 테트로미노가 떨어지는 로직
-  if(console::frameCount() % DROP_DELAY == 0){
-    currentTetrominoY++;
+  /*
+  지운 라인이 게임 종료 조건을 만족하는가?{
+    게임 상태를 GAMEOVER_HAPPY로 변경한다.
+    return;
   }
-  // 테트로미노가 바닥에 닿았을 때
-  if(currentTetrominoY == BOARD_HEIGHT){
-    // 테트로미노를 보드에 고정
-    for(int i = 0; i<currentTetrominoObject.size(); i++){
-      for(int j = 0; j<currentTetrominoObject.size(); j++){
-        if(currentTetrominoObject.shape()[i][j]){
-          board_[currentTetrominoX + j][currentTetrominoY + i] = true;
-        }
-      }
+  현재테트로미노가 존재하는가?{
+    현재 테트로미노가 바닥인가?{
+      현재 테트로미노를 보드에 고정시킨다.
+      지워야하는 라인을 체크한다.
+      현재 테트로미노를 다음 테트로미노로 바꾼다.
+    }바닥이 아니라면{
+      현재 테트로미노를 한칸 아래로 이동시킨다.
     }
-    // 라인이 꽉 찼는지 확인
-    checkLine();
-    // 다음 테트로미노 생성
-    createTetromino();
+
+  }존재하지않는다면{
+    현재테트로미노에 next테트로미노를 넣는다.
+    새로운 테트로미노를 만들고 next테트로미노에 넣는다.
+    테트리스 만드는 자리에 테트로미노가 있는가?{
+      게임 상태를 GAMEOVER_SAD로 변경한다.
+      return;
+    }
   }
-  // 키 이벤트 처리
-  keyEvent();
-  // 게임 오버 체크
-  if(currentTetrominoY == 0){
-    gamestate = gamestate::GAMEOVER_SAD;
-  }
-  // 게임 오버 시 화면에 시간 출력
-  if(gamestate == gamestate::GAMEOVER_SAD){
-    drawTime(0);
-  }
-  // 게임 오버 시 화면에 시간 출력
-  if(gamestate == gamestate::GAMEOVER_ENDKEY){
-    drawTime(1);
-  }
-  // 게임 오버 시 화면에 시간 출력
-  if(gamestate == gamestate::GAMEOVER_HAPPY){
-    drawTime(1);
-  }
-  // 홀드된 테트로미노 그리기
-  drawHoldTetromino();
-  // 지운 라인 개수 그리기
-  drawEraseLine();
-  // 그림자 테트로미노 그리기
-  drawShadowTetromino();
+  */
   
 }
 void Game::drawShadowTetromino(){
   // 그림자 테트로미노 그리기
   int shadowY = currentTetrominoY;
   while(true){
-    shadowY++;
-    //구현해야함
+    // 테트로미노가 바닥인가? 
+    // 바닥이라면 
+    // 쉐도우 테트로미노를 그린다. break;
+    // 바닥이 아니라면
+    // shadowY를 1만큼 증가시킨다.
   }
 }
 void Game::checkLine(){
@@ -116,8 +99,18 @@ void Game::keyEvent(){
     exit(0);
   }
   else if(console::key(console::K_SPACE)){
-    //hold
-    console::log("SPACE");
+    /* 홀드
+    만약 canHold가 true라면{
+      만약 holdTetromino가 없다면{
+        holdTetromino에 currentTetromino를 넣는다.
+        currentTetromino를 다음 테트로미노로 바꾼다.
+      }있다면{
+        holdTetromino와 currentTetromino를 교체한다.
+      }
+    }아니라면{
+      키 입력을 무시한다. 
+    }
+    */
   }
   else if(console::key(console::K_Z)){
     //반시계 방향 회전
