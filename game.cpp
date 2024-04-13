@@ -168,14 +168,19 @@ void Game::keyEvent(){
   else if(console::key(console::K_Z)){
     //반시계 방향 회전
     currentTetrominoObject = currentTetrominoObject.rotatedCCW();
+    // if(만약 돌린 오브젝트가 보드에 충돌한다면){
+    //   //돌린 오브젝트를 원래대로 돌린다.
+    //   currentTetrominoObject = currentTetrominoObject.rotatedCW();
+    // }
   }
   else if(console::key(console::K_X)){
     //시계 방향 회전
     currentTetrominoObject = currentTetrominoObject.rotatedCW();
+    // if(만약 돌린 오브젝트가 보드에 충돌한다면){
+    //   //돌린 오브젝트를 원래대로 돌린다.
+    //   currentTetrominoObject = currentTetrominoObject.rotatedCCW();
+    // }
   }
-  // else{
-  //   console::log("OTHER");
-  // }
 }
 // 지워진 라인 개수를 그린다.
 void Game::drawEraseLine(){
