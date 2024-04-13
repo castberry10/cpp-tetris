@@ -66,8 +66,11 @@ private:
   // 라인이 꽉 찼는지 확인하고 지운다.
   void checkLine();
 
+  // 현재 맵을 그린다. 
+  void drawBoard();
+  
   // 현재 시간을 그린다.
-  void drawTime();
+  void drawTime(int n);
 
   // 게임 끝 (n = 0: 승리, n = 1: 패배)
   void drawEnd(int n);

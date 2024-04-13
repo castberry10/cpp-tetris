@@ -22,6 +22,7 @@ void Game::update(){
   현재테트로미노가 존재하는가?{
     현재 테트로미노가 바닥인가?{
       현재 테트로미노를 보드에 고정시킨다.
+      canHold를 true로 변경한다.
       지워야하는 라인을 체크한다.
       현재 테트로미노를 다음 테트로미노로 바꾼다.
     }바닥이 아니라면{
@@ -29,15 +30,19 @@ void Game::update(){
     }
 
   }존재하지않는다면{
-    현재테트로미노에 next테트로미노를 넣는다.
+    next테트로미노가 존재하는가?{
+      현재테트로미노에 next테트로미노를 넣는다.
+    }없다면{
+      next테트로미노에 새로운 테트로미노를 넣는다.
+    }
     새로운 테트로미노를 만들고 next테트로미노에 넣는다.
     테트리스 만드는 자리에 테트로미노가 있는가?{
       게임 상태를 GAMEOVER_SAD로 변경한다.
       return;
     }
   }
+  keyEvent();
   */
-  
 }
 void Game::drawShadowTetromino(){
   // 그림자 테트로미노 그리기
@@ -77,6 +82,35 @@ void Game::checkLine(){
     }
   }
 }
+void Game::createTetromino(){
+  int type = rand() % 7;
+  switch (trype)
+  {
+  case tetrominoTypes::I:
+    nextTetrominoObject = Tetromino::I;
+    break;
+  case tetrominoTypes::O:
+    nextTetrominoObject = Tetromino::O;
+    break;
+  case tetrominoTypes::T:
+    nextTetrominoObject = Tetromino::T;
+    break;
+  case tetrominoTypes::S:
+    nextTetrominoObject = Tetromino::S;
+    break;
+  case tetrominoTypes::Z:
+    nextTetrominoObject = Tetromino::Z;
+    break;
+  case tetrominoTypes::J:
+    nextTetrominoObject = Tetromino::J;
+    break;
+  case tetrominoTypes::L:
+    nextTetrominoObject = Tetromino::L;
+    break;
+  default:
+    break;
+  }
+}
 void Game::keyEvent(){
   if(console::key(console::K_LEFT)){
     //왼쪽 이동
@@ -88,14 +122,27 @@ void Game::keyEvent(){
   }
   else if(console::key(console::K_UP)){
     //하드 드롭
-    console::log("UP");
+    /*
+     while(1){
+      if(현재테트로미노가 바닥인가?){
+        현재 테트로미노를 보드에 고정시킨다.
+        canHold를 true로 변경한다.
+        지워야하는 라인을 체크한다.
+        현재 테트로미노를 다음 테트로미노로 바꾼다.
+        break;
+      }바닥이 아니라면{
+        현재테트로미노를 한칸 아래로 이동시킨다. (currentTetrominoY++)
+      }
+     }
+    */
   }
   else if(console::key(console::K_DOWN)){
     //소프트 드롭
     this->currentTetrominoY--;
   }
   else if(console::key(console::K_ESC)){
-    //게임 종료
+    //게임 종료 // 문제가 있다면 여기서 esc 처리 안해도 되긴함
+    gamestate = gamestate::GAMEOVER_ENDKEY;
     exit(0);
   }
   else if(console::key(console::K_SPACE)){
@@ -111,6 +158,9 @@ void Game::keyEvent(){
       키 입력을 무시한다. 
     }
     */
+   if(canHold){
+
+   }
   }
   else if(console::key(console::K_Z)){
     //반시계 방향 회전
@@ -144,17 +194,26 @@ void Game::drawTime(int n){
   time_t now = time(0);
   tm *ltm = localtime(&now);
   if(n == 0){ // n = 0 : 보드 밑에 시간 출력
-    console::draw(BOARD_WIDTH / 2 + 1, BOARD_HEIGHT + 2 + 1, std::to_string(ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec) + " (GAME OVER)"
+    console::draw(BOARD_WIDTH / 2 + 1, BOARD_HEIGHT + 2 + 1, std::to_string(ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec));
   }if(n == 1){ // n = 1 : 게임 종료시의 시간 출력
     console::draw(BOARD_WIDTH / 2 + 1, (BOARD_HEIGHT / 2) + 2, std::to_string(ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec));
   }
 }
-
+void Game::drawBoard(){
+  for(int i = 0; i<BOARD_WIDTH; i++){
+    for(int j = 0; j<BOARD_HEIGHT; j++){
+      if(board_[i][j]){
+        console::draw(i, j, BLOCK_STRING);
+      }
+    }
+  }
+}
 // 게임 화면을 그린다.
 void Game::draw(){
   console::drawBox(0, 0, BOARD_WIDTH + 2, BOARD_HEIGHT + 2);
   console::drawBox(14, 0, 20, 6);
   console::drawBox(22, 0, 28, 6);
+  Game::drawBoard();
   Tetromino::drawAt(BLOCK_STRING, currentTetrominoX, currentTetrominoY);
 }
 
@@ -165,9 +224,12 @@ bool Game::shouldExit(){
     return true;
   }
   else if(gamestate == gamestate::GAMEOVER_HAPPY){
+    drawEnd(0);
+    drawTime(1);
     return true;
   }
   else if(gamestate == gamestate::GAMEOVER_SAD){
+    drawEnd(1);
     return true;
   }
   else{
