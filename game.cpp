@@ -34,8 +34,11 @@ void Game::update(){
       현재테트로미노에 next테트로미노를 넣는다.
     }없다면{
       next테트로미노에 새로운 테트로미노를 넣는다.
+      현재테트로미노에 next테트로미노를 넣는다.
     }
     새로운 테트로미노를 만들고 next테트로미노에 넣는다.
+    currentTetrominoX를 BOARD_WIDTH / 2로 초기화한다.
+    currentTetrominoY를 BOARD_HEIGHT로 초기화한다.
     테트리스 만드는 자리에 테트로미노가 있는가?{
       게임 상태를 GAMEOVER_SAD로 변경한다.
       return;
