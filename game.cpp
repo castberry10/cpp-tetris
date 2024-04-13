@@ -217,7 +217,11 @@ void Game::draw(){
   console::drawBox(14, 0, 20, 6);
   console::drawBox(22, 0, 28, 6);
   Game::drawBoard();
-  Tetromino::drawAt(BLOCK_STRING, currentTetrominoX, currentTetrominoY);
+  currentTetromino.drawAt(BLOCK_STRING, currentTetrominoX, currentTetrominoY);
+  nextTetrominoObject.drawAt(BLOCK_STRING, 15, 1);
+  holdTetrominoObject.drawAt(BLOCK_STRING, 23, 1);
+  drawEraseLine();
+  drawTime(0);
 }
 
   // 게임 루프가 종료되어야 하는지 여부를 반환한다.
