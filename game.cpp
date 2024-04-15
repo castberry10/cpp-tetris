@@ -56,6 +56,7 @@ void Game::drawShadowTetromino(){
     // 쉐도우 테트로미노를 그린다. break;
     // 바닥이 아니라면
     // shadowY를 1만큼 증가시킨다.
+
   }
 }
 void Game::checkLine(){
@@ -194,10 +195,25 @@ void Game::keyEvent(){
       }
      }
     */
+   while(1){
+    if(checkFloorTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+      for(int i = 0; i<currentTetrominoObject.size(); i++){
+        for(int j = 0; j<currentTetrominoObject.size(); j++){
+          board_[currentTetrominoY + j][currentTetrominoX + i] = true;
+        }
+      }
+      this->canHold = true;
+      checkLine();
+      break;
+    }
+    else{
+      this->currentTetrominoY++;
+    }
+   }
   }
   else if(console::key(console::K_DOWN)){
     //소프트 드롭
-    this->currentTetrominoY--;
+    this->currentTetrominoY++;
   }
   else if(console::key(console::K_ESC)){
     //게임 종료 // 문제가 있다면 여기서 esc 처리 안해도 되긴함
