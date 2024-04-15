@@ -82,9 +82,18 @@ private:
   void hardDrop();
 
   // 테트로미노가 바닥에 닿았는지 확인
-  void checkTetromino(Tetromino t, int x, int y);
+  // 바닥이라면 True 바닥이 아니라면 false 
+  bool checkFloorTetromino(Tetromino t, int x, int y);
 
-
+  // 테트로미노가 벽에 붙었나? 
+  // x 움직일때 체크
+  // 왜 있는가? 그것은 테트로미노가 회전될때마다 벽에 붙을 수 있는 
+  // 수준이 다르니 이걸로 체크해줘야할 듯 
+  bool checkWallTetromino(Tetromino t, int x, int y);
+  
+  // 테트로미노가 회전되었을때 실행
+  // 벽이나 테트로미노가 있으면 True, 문제가 없으면 False 
+  bool checkProblemTetromino(Tetromino t, int x, int y);
 public:
   // 게임의 한 프레임을 처리한다.
   void update();

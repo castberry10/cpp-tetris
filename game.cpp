@@ -114,6 +114,62 @@ void Game::createTetromino(){
     break;
   }
 }
+  // 테트로미노가 바닥에 닿았는지 확인
+  // 바닥이라면 True 바닥이 아니라면 false
+bool Game::checkFloorTetromino(Tetromino t, int x, int y){
+  // t의 shape_ 
+  /*
+  리턴벨류 = false
+  t.shape_ 맨 밑에서부터 체크 (2중 for)
+    맨밑 중에 true가 있다면? 
+      true 좌표의 y + 1에 mapdata를 조회
+      mapdata가 true라면
+        return true
+  return false
+
+  for(int i = 0; i < MAX_SIZE; ++i){
+    for(int j = 0; j < MAX_SIZE; ++j){
+      if
+    }
+  }   
+  */
+
+}
+
+  // 테트로미노가 벽이나 블록과 겹치는가? 
+  // x 움직일때 체크
+  // 왜 있는가? 그것은 테트로미노가 회전될때마다 벽에 붙을 수 있는 
+  // 수준이 다르니 이걸로 체크해줘야할 듯 
+bool Game::checkWallTetromino(Tetromino t, int x, int y){
+  /*
+  리턴벨류 = false
+  for문 i < MAX_SIZE, j < MAX_SIZE 2중
+    for문
+      if t.shape_[y + j][x + i] == true라면
+        if x가 0보다 작거나 BOARD_WIDTH보다 크다면
+          return true
+        if y가 0보다 작거나 BOARD_HEIGHT보다 크다면
+          return true
+        if board_[y + j][x + i] == true라면
+          return true
+  */
+}
+
+  // 생각해보니 x 움직일때도 움직일때도 해야할 듯? 
+  // 그냥 벽체크 + 바닥체크 합쳐서 만드는 것도
+  // 테트로미노가 회전되었을때 실행
+  // 벽이나 테트로미노가 있으면 True, 문제가 없으면 False 
+bool Game::checkProblemTetromino(Tetromino t, int x, int y){
+  /*
+  리턴벨류 = false
+  if checkWallTetromino(t, x, y) == true
+    return true
+  else if checkFloorTetromino(t, x, y) == true
+    return true
+  else
+    return false
+  */
+}
 void Game::keyEvent(){
   if(console::key(console::K_LEFT)){
     //왼쪽 이동
