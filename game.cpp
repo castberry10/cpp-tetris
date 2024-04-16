@@ -51,7 +51,7 @@ void Game::drawShadowTetromino(){
   // 그림자 테트로미노 그리기
   int shadowY = currentTetrominoY;
   while(true){
-    // 테트로미노가 바닥인가? 
+    // 테트로미노가 바닥이거나 다른 블록과 겹치는가?  
     // 바닥이라면 
     // 쉐도우 테트로미노를 그린다. break;
     // 바닥이 아니라면
@@ -143,7 +143,19 @@ bool Game::checkFloorTetromino(Tetromino t, int x, int y){
     }
   }   
   */
-
+  bool flag = false;
+  for(int i = 0; i < t.size(); i++){
+    for(int j = 0; j < t.size(); j++){
+      if(t.shape_[j][i]){
+        if(y + j < 0){
+          return true;
+        }
+        if(board_[y + j][x + i]){
+          return true;
+        }
+      }
+    }
+  }
 }
 
   // 테트로미노가 벽이나 블록과 겹치는가? 
