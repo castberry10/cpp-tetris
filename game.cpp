@@ -56,7 +56,13 @@ void Game::drawShadowTetromino(){
     // 쉐도우 테트로미노를 그린다. break;
     // 바닥이 아니라면
     // shadowY를 1만큼 증가시킨다.
-
+    if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, shadowY)){
+      currentTetrominoObject.drawAt(SHADOW_STRING, currentTetrominoX, shadowY);
+      break;
+    }
+    else{
+      shadowY++;
+    }
   }
 }
 void Game::checkLine(){
@@ -86,6 +92,7 @@ void Game::checkLine(){
     }
   }
 }
+//next테트로미노의 랜덤한 테트로미노를 넣는다.
 void Game::createTetromino(){
   int type = rand() % 7;
   switch (trype)
@@ -123,12 +130,14 @@ bool Game::checkFloorTetromino(Tetromino t, int x, int y){
   리턴벨류 = false
   t.shape_ 맨 밑에서부터 체크 (2중 for)
     맨밑 중에 true가 있다면? 
+      만약 y가 0보다 작다면
+        return true
       true 좌표의 y + 1에 mapdata를 조회
       mapdata가 true라면
         return true
   return false
 
-  for(int i = 0; i < MAX_SIZE; ++i){
+  for(int i = 0; i < MAX  ㅌ_SIZE; ++i){
     for(int j = 0; j < MAX_SIZE; ++j){
       if
     }
@@ -234,7 +243,15 @@ void Game::keyEvent(){
     }
     */
    if(canHold){
-
+    if(holdTetrominoObject == NULL){
+      holdTetrominoObject = currentTetrominoObject;
+      createTetromino();
+    }
+    else{
+      Tetromino temp = holdTetrominoObject;
+      holdTetrominoObject = currentTetrominoObject;
+      currentTetrominoObject = temp;
+    }
    }
   }
   else if(console::key(console::K_Z)){
