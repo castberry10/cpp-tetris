@@ -2,7 +2,6 @@
 #include <iostream>
 #include "console/console.h"
 #include <time.h>
-
 Game::Game(){
   gamestate = gamestate::PLAY;
   for(int i = 0; i<BOARD_WIDTH; i++){
@@ -11,6 +10,11 @@ Game::Game(){
     }
   }
 }
+
+// 테트리스가 쌓이는 조건
+// 소프트드롭
+// 하드드롭
+// 자연스럽게 떨어지는 것
 
 // 게임의 한 프레임을 처리한다.
 void Game::update(){
@@ -46,6 +50,11 @@ void Game::update(){
   }
   keyEvent();
   */
+  // if(eraseLine >= LINES){
+  //   gamestate = gamestate::GAMEOVER_HAPPY;
+  //   return;
+  // }
+  // if(currentTetrominoObject)
 }
 void Game::drawShadowTetromino(){
   // 그림자 테트로미노 그리기
@@ -150,9 +159,6 @@ bool Game::checkFloorTetromino(Tetromino t, int x, int y){
         if(y + j < 0){
           return true;
         }
-        if(board_[y + j][x + i]){
-          return true;
-        }
       }
     }
   }
@@ -175,6 +181,23 @@ bool Game::checkWallTetromino(Tetromino t, int x, int y){
         if board_[y + j][x + i] == true라면
           return true
   */
+ for(int i = 0; i < t.size(); i++){
+   for(int j = 0; j < t.size(); j++){
+     if(t.shape_[j][i]){
+       if(x + i < 0 || x + i >= BOARD_WIDTH){
+         return true;
+       }
+       if(y + j < 0 || y + j >= BOARD_HEIGHT){
+         return true;
+       }
+       if(board_[y + j][x + i]){
+         return true;
+       }
+     }
+   }
+ }
+ return false;
+
 }
 
   // 생각해보니 x 움직일때도 움직일때도 해야할 듯? 
@@ -191,6 +214,27 @@ bool Game::checkProblemTetromino(Tetromino t, int x, int y){
   else
     return false
   */
+ bool flag = false;
+  for(int i = 0; i < t.size(); i++){
+    for(int j = 0; j < t.size(); j++){
+      if(t.shape_[j][i]){
+        if(y + j < 0){
+          return true;
+        }
+      }
+      if(t.shape_[j][i]){
+       if(x + i < 0 || x + i >= BOARD_WIDTH){
+         return true;
+       }
+       if(y + j < 0 || y + j >= BOARD_HEIGHT){
+         return true;
+       }
+       if(board_[y + j][x + i]){
+         return true;
+       }
+     }
+    }
+  }
 }
 void Game::keyEvent(){
   if(console::key(console::K_LEFT)){
@@ -225,6 +269,7 @@ void Game::keyEvent(){
       }
       this->canHold = true;
       checkLine();
+      
       break;
     }
     else{
@@ -273,6 +318,9 @@ void Game::keyEvent(){
     //   //돌린 오브젝트를 원래대로 돌린다.
     //   currentTetrominoObject = currentTetrominoObject.rotatedCW();
     // }
+    if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+      currentTetrominoObject = currentTetrominoObject.rotatedCW();
+    }
   }
   else if(console::key(console::K_X)){
     //시계 방향 회전
@@ -281,6 +329,9 @@ void Game::keyEvent(){
     //   //돌린 오브젝트를 원래대로 돌린다.
     //   currentTetrominoObject = currentTetrominoObject.rotatedCCW();
     // }
+    if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+      currentTetrominoObject = currentTetrominoObject.rotatedCCW();
+    }
   }
 }
 // 지워진 라인 개수를 그린다.
