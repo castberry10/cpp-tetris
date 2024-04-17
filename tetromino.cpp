@@ -66,6 +66,8 @@ Tetromino Tetromino::rotatedCCW(){
     // 회전된 테트로미노의 모양을 문자열로 변환
     for(int i = 0; i<size_; i++){
         for(int j = 0; j<size_; j++){
+
+            
             if(data[i][j]){
                 createString += "O";
             }else{

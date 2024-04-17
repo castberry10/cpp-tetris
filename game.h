@@ -20,15 +20,11 @@ private:
   // 게임 상태
   int gamestate;
   
-  
-  // hold된 테트로미노
-  int holdTetromino;
+  // // 초기화 여부
+  // bool init;
 
   // hold 가능 여부
   bool canHold;
-
-  // 현재 테트로미노
-  int currentTetromino;
   
   // 테트로미노의 X 좌표
   int currentTetrominoX;
@@ -36,14 +32,17 @@ private:
   // 테트로미노의 Y 좌표
   int currentTetrominoY;
 
+  // 홀드한 경험
+  bool holded;
+
   // 현재 테트로미노 
-  Tetromino currentTetrominoObject;
+  Tetromino currentTetrominoObject = Tetromino::I;
 
   // 다음 테트로미노
-  Tetromino nextTetrominoObject;
+  Tetromino nextTetrominoObject = Tetromino::I;
 
   //홀드된 테트로미노
-  Tetromino holdTetrominoObject;
+  Tetromino holdTetrominoObject = Tetromino::I;
   
   // 테트로미노 종류 -> 7개 (0 ~ 6)
   enum tetrominoTypes { I, O, T, S, Z, J, L };
@@ -81,6 +80,9 @@ private:
   // 테트로미노 맨 아래로 이동
   void hardDrop();
 
+  // 현재 테트로미노를 맵에 박는다. 
+  void markTetromino(Tetromino t, int x, int y);
+
   // 테트로미노가 바닥에 닿았는지 확인
   // 바닥이라면 True 바닥이 아니라면 false 
   bool checkFloorTetromino(Tetromino t, int x, int y);
@@ -94,6 +96,10 @@ private:
   // 테트로미노가 회전되었을때 실행
   // 벽이나 테트로미노가 있으면 True, 문제가 없으면 False 
   bool checkProblemTetromino(Tetromino t, int x, int y);
+
+  // 테트로미노가 쌓아지고 x와 y 초기화
+  bool initTetromino();
+
 public:
   // 게임의 한 프레임을 처리한다.
   void update();
