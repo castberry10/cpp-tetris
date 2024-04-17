@@ -9,9 +9,9 @@ Game::Game(){
       board_[i][j] = false;
     }
   }
-
+  frameCount = 0;
   currentTetrominoX = BOARD_WIDTH / 2;
-  currentTetrominoY = BOARD_HEIGHT;
+  currentTetrominoY = 0;
   eraseLine = 0;
   canHold = true;
   // holdTetrominoObject = NULL; 해결해야함
@@ -26,8 +26,10 @@ Game::Game(){
 // 테트로미노를 초기화한다.
 // 성공하면 true 실패하면 false
 bool Game::initTetromino(){
+  
   currentTetrominoX = BOARD_WIDTH / 2;
-  currentTetrominoY = BOARD_HEIGHT;
+  // currentTetrominoY = BOARD_HEIGHT;
+  currentTetrominoY = 0;
   
   canHold = true;
   createTetromino();
@@ -80,18 +82,26 @@ void Game::update(){
 
   keyEvent();
   */
-  if(eraseLine >= LINES){
-    gamestate = gamestate::GAMEOVER_HAPPY;
+ 
+  
+  keyEvent();
+  if(frameCount >= DROP_DELAY){
+    if(eraseLine >= LINES){
+      gamestate = gamestate::GAMEOVER_HAPPY;
+      return;
+    }
+    //테트로미노가 바닥
+    if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY + 1)){
+      markTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY);
+      initTetromino();
+    }else{ // 바닥이 아니라면 
+      currentTetrominoY++;
+    }
+    frameCount = 0;
     return;
   }
-  //테트로미노가 바닥
-  if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY + 1)){
-    markTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY);
-    initTetromino();
-  }else{ // 바닥이 아니라면 
-    currentTetrominoY++;
-  }
-  keyEvent();
+  frameCount++;
+  
 
 
   // if(currentTetrominoObject)
@@ -116,7 +126,7 @@ void Game::drawShadowTetromino(){
     // 바닥이 아니라면
     // shadowY를 1만큼 증가시킨다.
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, shadowY)){
-      currentTetrominoObject.drawAt(SHADOW_STRING, currentTetrominoX, shadowY);
+      currentTetrominoObject.drawAt(SHADOW_STRING, currentTetrominoX+1, shadowY+1);
       break;
     }
     else{
@@ -268,7 +278,7 @@ bool Game::checkProblemTetromino(Tetromino t, int x, int y){
  bool flag = false;
   for(int i = 0; i < t.size(); i++){
     for(int j = 0; j < t.size(); j++){
-      if(t.check(j, x)){
+      if(t.check(i, j)){
         if(y + j < 0){
           return true;
         }
@@ -278,7 +288,7 @@ bool Game::checkProblemTetromino(Tetromino t, int x, int y){
        if(y + j < 0 || y + j >= BOARD_HEIGHT){
          return true;
        }
-       if(board_[y + j][x + i]){
+       if(board_[x + i][ y + j]){
          return true;
        }
       }
@@ -336,6 +346,9 @@ void Game::keyEvent(){
   else if(console::key(console::K_DOWN)){
     //소프트 드롭
     this->currentTetrominoY++;
+    if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+      this->currentTetrominoY--;
+    }
   }
   else if(console::key(console::K_ESC)){
     //게임 종료 // 문제가 있다면 여기서 esc 처리 안해도 되긴함
@@ -359,18 +372,21 @@ void Game::keyEvent(){
     Tetromino temp = holdTetrominoObject;
     holdTetrominoObject = *(currentTetrominoObject.original());
     currentTetrominoObject = temp;
+    canHold = false;
    }
   }
   else if(console::key(console::K_Z)){
     //반시계 방향 회전
     currentTetrominoObject = currentTetrominoObject.rotatedCCW();
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+      console::log("problem");
       currentTetrominoObject = currentTetrominoObject.rotatedCW();
     }
   }
   else if(console::key(console::K_X)){
     //시계 방향 회전
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+      console::log("problem");
       currentTetrominoObject = currentTetrominoObject.rotatedCCW();
     }
   }
@@ -393,34 +409,34 @@ void Game::drawEnd(int n){
 
 // 현재 시간을 그린다.
 void Game::drawTime(int n){
-  int gameTime = (int) difftime(time(0), starttime);
+  double gameTime = difftime(time(0), starttime);
   // 초니까 
-  int hour = gameTime / 3600;
-  int min = (gameTime % 3600) / 60;
-  int sec = gameTime % 60;
-  std::string strhour = std::to_string(hour);
+  int min = gameTime / 60;
+  int sec = gameTime - (min * 60);
+  int milsec = (gameTime - (min * 60) - sec) * 100;
   std::string strmin = std::to_string(min);
   std::string strsec = std::to_string(sec);
-  if(hour < 10){
-    strhour = "0" + strhour;
-  }
+  std::string strmilsec = std::to_string(milsec);
   if(min < 10){
     strmin = "0" + strmin;
   }
   if(sec < 10){
     strsec = "0" + strsec;
   } 
+  if(milsec < 10){
+    strmilsec = "0" + strmilsec;
+  }
   if(n == 0){ // n = 0 : 보드 밑에 시간 출력
-    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, BOARD_HEIGHT + 2 + 1, strhour + ":" + strmin + ":" + strsec);
+    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, BOARD_HEIGHT + 2 + 1, strmin + ":" + strsec + ":" + strmilsec);
   }if(n == 1){ // n = 1 : 게임 종료시의 시간 출력
-    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, (BOARD_HEIGHT / 2) + 2, strhour + ":" + strmin + ":"  + strsec);
+    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, (BOARD_HEIGHT / 2) + 2, strmin + ":"  + strsec + ":" + strmilsec);
   }
 }
 void Game::drawBoard(){
   for(int i = 0; i<BOARD_WIDTH; i++){
     for(int j = 0; j<BOARD_HEIGHT; j++){
       if(board_[i][j]){
-        console::draw(i, j, BLOCK_STRING);
+        console::draw(i + 1, j + 1, BLOCK_STRING);
       }
     }
   }
@@ -433,8 +449,8 @@ void Game::draw(){
   console::draw(15, 0, "next");
   console::draw(22, 0, "hold");
   
-  Game::drawBoard();
-  currentTetrominoObject.drawAt(BLOCK_STRING, currentTetrominoX, currentTetrominoY);
+  drawBoard();
+  currentTetrominoObject.drawAt(BLOCK_STRING, currentTetrominoX + 1, currentTetrominoY + 1);
   nextTetrominoObject.drawAt(BLOCK_STRING, 15, 1);
   if(holded){
     holdTetrominoObject.drawAt(BLOCK_STRING, 23, 1);

@@ -84,7 +84,9 @@ Tetromino Tetromino::rotatedCCW(){
 void Tetromino::drawAt(std::string s, int x, int y){ 
     for(int i = 0; i < size_ ; i++){
         for(int j = 0; j < size_; j++){
-            console::draw(j + x, i + y, s); // 이거 실제로 이 좌표가 맞는지는 확인해봐야함
+            if(shape_[i][j]){
+                console::draw(j + x, i + y, s); // 이거 실제로 이 좌표가 맞는지는 확인해봐야함
+            }
         }
     }
 }

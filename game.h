@@ -20,6 +20,9 @@ private:
   // 게임 상태
   int gamestate;
   
+  // frame count
+  int frameCount;
+
   time_t starttime;
   // // 초기화 여부
   // bool init;
