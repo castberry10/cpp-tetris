@@ -20,6 +20,7 @@ private:
   // 게임 상태
   int gamestate;
   
+  time_t starttime;
   // // 초기화 여부
   // bool init;
 

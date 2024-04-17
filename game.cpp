@@ -19,7 +19,7 @@ Game::Game(){
   currentTetrominoObject = nextTetrominoObject;
   createTetromino();
   holded = false;
-
+  starttime = time(0);
 
 }
 // 테트로미노가 쌓인다면 실행되는 함수
@@ -28,6 +28,7 @@ Game::Game(){
 bool Game::initTetromino(){
   currentTetrominoX = BOARD_WIDTH / 2;
   currentTetrominoY = BOARD_HEIGHT;
+  
   canHold = true;
   createTetromino();
   currentTetrominoObject = nextTetrominoObject;
@@ -319,7 +320,7 @@ void Game::keyEvent(){
     if(checkFloorTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
       for(int i = 0; i<currentTetrominoObject.size(); i++){
         for(int j = 0; j<currentTetrominoObject.size(); j++){
-          board_[currentTetrominoY + j][currentTetrominoX + i] = true;
+          board_[currentTetrominoX + i][currentTetrominoY + j] = true;
         }
       }
       this->canHold = true;
@@ -363,21 +364,12 @@ void Game::keyEvent(){
   else if(console::key(console::K_Z)){
     //반시계 방향 회전
     currentTetrominoObject = currentTetrominoObject.rotatedCCW();
-    // if(만약 돌린 오브젝트가 보드에 충돌한다면){
-    //   //돌린 오브젝트를 원래대로 돌린다.
-    //   currentTetrominoObject = currentTetrominoObject.rotatedCW();
-    // }
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
       currentTetrominoObject = currentTetrominoObject.rotatedCW();
     }
   }
   else if(console::key(console::K_X)){
     //시계 방향 회전
-    currentTetrominoObject = currentTetrominoObject.rotatedCW();
-    // if(만약 돌린 오브젝트가 보드에 충돌한다면){
-    //   //돌린 오브젝트를 원래대로 돌린다.
-    //   currentTetrominoObject = currentTetrominoObject.rotatedCCW();
-    // }
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
       currentTetrominoObject = currentTetrominoObject.rotatedCCW();
     }
@@ -401,12 +393,27 @@ void Game::drawEnd(int n){
 
 // 현재 시간을 그린다.
 void Game::drawTime(int n){
-  time_t now = time(0);
-  tm *ltm = localtime(&now);
+  int gameTime = (int) difftime(time(0), starttime);
+  // 초니까 
+  int hour = gameTime / 3600;
+  int min = (gameTime % 3600) / 60;
+  int sec = gameTime % 60;
+  std::string strhour = std::to_string(hour);
+  std::string strmin = std::to_string(min);
+  std::string strsec = std::to_string(sec);
+  if(hour < 10){
+    strhour = "0" + strhour;
+  }
+  if(min < 10){
+    strmin = "0" + strmin;
+  }
+  if(sec < 10){
+    strsec = "0" + strsec;
+  } 
   if(n == 0){ // n = 0 : 보드 밑에 시간 출력
-    console::draw(BOARD_WIDTH / 2 + 1, BOARD_HEIGHT + 2 + 1, std::to_string(ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec));
+    console::draw(BOARD_WIDTH / 2 - 5, BOARD_HEIGHT + 2 + 1, strhour + ":" + strmin + ":" + strsec);
   }if(n == 1){ // n = 1 : 게임 종료시의 시간 출력
-    console::draw(BOARD_WIDTH / 2 + 1, (BOARD_HEIGHT / 2) + 2, std::to_string(ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec));
+    console::draw(BOARD_WIDTH / 2 - 5, (BOARD_HEIGHT / 2) + 2, strhour + ":" + strmin + ":"  + strsec);
   }
 }
 void Game::drawBoard(){
