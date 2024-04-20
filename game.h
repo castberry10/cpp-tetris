@@ -3,6 +3,7 @@
 #define GAME_H
 
 #include "tetromino.h"
+#include <chrono>
 
 #define BOARD_WIDTH 10
 #define BOARD_HEIGHT 20
@@ -23,7 +24,7 @@ private:
   // frame count
   int frameCount;
 
-  time_t starttime;
+  std::chrono::system_clock::time_point startTime;
   // // 초기화 여부
   // bool init;
 

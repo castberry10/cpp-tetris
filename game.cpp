@@ -1,7 +1,7 @@
 #include "game.h"
 #include <iostream>
 #include "console/console.h"
-#include <time.h>
+#include <chrono>
 Game::Game(){
   gamestate = gamestate::PLAY;
   for(int i = 0; i<BOARD_WIDTH; i++){
@@ -19,7 +19,7 @@ Game::Game(){
   currentTetrominoObject = nextTetrominoObject;
   createTetromino();
   holded = false;
-  starttime = time(0);
+  startTime = std::chrono::system_clock::now();
 
 }
 // 테트로미노가 쌓인다면 실행되는 함수
@@ -409,14 +409,19 @@ void Game::drawEnd(int n){
 
 // 현재 시간을 그린다.
 void Game::drawTime(int n){
-  double gameTime = difftime(time(0), starttime);
-  // 초니까 
-  int min = gameTime / 60;
-  int sec = gameTime - (min * 60);
-  int milsec = (gameTime - (min * 60) - sec) * 100;
+  
+  std::chrono::system_clock::time_point endTime = std::chrono::system_clock::now();
+
+  std::chrono::duration<double, std::milli> dis = endTime - startTime;
+
+  long long total = dis.count();
+  int min = total / 60000;
+  int sec = (total % 60000) / 1000;
+  int milsec = (total % 1000) / 10;
+    
   std::string strmin = std::to_string(min);
-  std::string strsec = std::to_string(sec);
-  std::string strmilsec = std::to_string(milsec);
+  std::string strsec = std::to_string(sec % 60);
+  std::string strmilsec = std::to_string(milsec % 100);
   if(min < 10){
     strmin = "0" + strmin;
   }
