@@ -63,8 +63,8 @@ public:
   // 화면의 x, y 위치에 s 문자열로  테트로미노를 그린다
   void drawAt(std::string s, int x, int y);
 
-  // 테트로미노의 좌상단 기준 x, y 위치에 블록이 있는지 여부를 나타내는 함수
-  bool check(int x, int y) { return shape_[x][y]; }
+  // 테트로미노의 좌상단 기준 y, x 위치에 블록이 있는지 여부를 나타내는 함수
+  bool check(int y, int x) { return shape_[y][x]; }
 
   // 각 테트로미노 종류에 대한 선언
   // cpp 파일에서 Tetromino Tetromino::I(...); 와 같이 구현한다

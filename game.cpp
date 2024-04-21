@@ -108,10 +108,10 @@ void Game::update(){
   // if(currentTetrominoObject)
 }
 void Game::markTetromino(Tetromino t, int x, int y){
-  for (int j = 0; j < t.size(); j++) { // j -> x
-    for (int i = 0; i < t.size(); i++) { // i -> y
-      if (t.check(j, i)) {
-        board_[x + j][y + i] = true;
+  for (int i = 0; i < t.size(); i++) { // j -> x
+    for (int j = 0; j < t.size(); j++) { // i -> y
+      if (t.check(i, j)) {
+        board_[y + i][x + j] = true;
       }
     }
   }
@@ -254,11 +254,11 @@ bool Game::checkWallTetromino(Tetromino t, int x, int y){
   */
  for(int i = 0; i < t.size(); i++){ // i - > y로 
     for(int j = 0; j < t.size(); j++){ // j -> x로 
-      if(t.check(j, i)){
+      if(t.check(i, j)){
         if(x + j < 0 || x + j >= BOARD_WIDTH){
           return true;
         }
-        if(board_[x + i][y + j]){
+        if(board_[y + j][x + i]){
           return true;
         }
       }
@@ -291,7 +291,7 @@ bool Game::checkProblemTetromino(Tetromino t, int x, int y){
         if(x + j < 0 || x + j >= BOARD_WIDTH){
           return true;
         }
-        if(board_[x + i][y + j]){
+        if(board_[y + i][x + j]){
           return true;
         }
       }
@@ -450,8 +450,8 @@ void Game::drawTime(int n){
   // }
 }
 void Game::drawBoard(){
-  for(int i = 0; i<BOARD_WIDTH; i++){
-    for(int j = 0; j<BOARD_HEIGHT; j++){
+  for(int i = 0; i<BOARD_HEIGHT; i++){
+    for(int j = 0; j<BOARD_WIDTH; j++){
       if(board_[i][j]){
         console::draw(i + 1, j + 1, BLOCK_STRING);
       }
@@ -479,7 +479,6 @@ void Game::draw(){
     holdTetrominoObject.drawAt(BLOCK_STRING, 22, 2);
   }
   drawEraseLine();
-  
   drawTime(0);
 }
 

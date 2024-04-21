@@ -15,7 +15,7 @@ class Game {
 private:
   // 게임 판을 나타내는 배열
   // board[x][y]가 true 인 경우 x, y 위치에 고정된 블록이 존재하는 것을 의미한다
-  bool board_[BOARD_WIDTH][BOARD_HEIGHT];
+  bool board_[BOARD_HEIGHT][BOARD_WIDTH];
   enum gamestate { PLAY, GAMEOVER_ENDKEY, GAMEOVER_HAPPY, GAMEOVER_SAD };
 
   // 게임 상태

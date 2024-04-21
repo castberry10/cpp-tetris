@@ -9,9 +9,9 @@ Tetromino::Tetromino(std::string name, int size, std::string shape)
     size_ = size;     // 테트로미노의 사이즈
     original_ = this; // 회전되지 않은 원래 테트로미노 객체를 저장하는 포인터
     int index = 0;    // shape 문자열의 인덱스
-    for (int x = 0; x < size; x++)
+    for (int y = 0; y < size; y++)
     { 
-        for (int y = 0; y < size; y++)
+        for (int x = 0; x < size; x++)
         {
             shape_[y][x] = (shape[index] == 'O'); // 블록이 존재한다면 O를 통해 표시하고 아니라면 X를 통해 표시한다.
             index++;
@@ -86,7 +86,7 @@ Tetromino Tetromino::rotatedCCW(){
 void Tetromino::drawAt(std::string s, int x, int y){ 
     for(int i = 0; i < size_ ; i++){ // i -> y
         for(int j = 0; j < size_; j++){ // j -> x
-            if(shape_[j][i]){
+            if(shape_[i][j]){
                 console::draw(j + x, i + y, s); // 이거 실제로 이 좌표가 맞는지는 확인해봐야함
             }
 
