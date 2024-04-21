@@ -31,7 +31,7 @@ bool Game::initTetromino(){
   // currentTetrominoY = BOARD_HEIGHT;
   currentTetrominoY = 0;
   
-  canHold = true;
+  
   createTetromino();
   currentTetrominoObject = nextTetrominoObject;
   createTetromino();
@@ -93,6 +93,7 @@ void Game::update(){
     //테트로미노가 바닥
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY + 1)){
       markTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY);
+      canHold = true;
       initTetromino();
     }else{ // 바닥이 아니라면 
       currentTetrominoY++;
@@ -107,18 +108,22 @@ void Game::update(){
   // if(currentTetrominoObject)
 }
 void Game::markTetromino(Tetromino t, int x, int y){
-  for (int i = 0; i < t.size(); i++) {
-    for (int j = 0; j < t.size(); j++) {
+  for (int j = 0; j < t.size(); j++) { // j -> x
+    for (int i = 0; i < t.size(); i++) { // i -> y
       if (t.check(j, i)) {
-        board_[y + j][x + i] = true;
+        board_[x + j][y + i] = true;
       }
     }
   }
+  canHold = true;
 }
-
-void Game::drawShadowTetromino(){
   // 그림자 테트로미노 그리기
+void Game::drawShadowTetromino(){
+
   int shadowY = currentTetrominoY;
+  // if(shadowY < 1){
+  //   return;
+  // }
   while(true){
     // 테트로미노가 바닥이거나 다른 블록과 겹치는가?  
     // 바닥이라면 
@@ -126,7 +131,7 @@ void Game::drawShadowTetromino(){
     // 바닥이 아니라면
     // shadowY를 1만큼 증가시킨다.
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, shadowY)){
-      currentTetrominoObject.drawAt(SHADOW_STRING, currentTetrominoX+1, shadowY+1);
+      currentTetrominoObject.drawAt(SHADOW_STRING, currentTetrominoX+1, shadowY);
       break;
     }
     else{
@@ -153,7 +158,7 @@ void Game::checkLine(){
             board_[j][k] = false;
           }
           else{
-            board_[j][k] = board_[j][k + 1];
+            board_[j][k] = board_[j][k - 1];
           }
         }
       }
@@ -212,11 +217,16 @@ bool Game::checkFloorTetromino(Tetromino t, int x, int y){
     }
   }   
   */
-  for(int i = 0; i < t.size(); i++){
-    for(int j = 0; j < t.size(); j++){
-      // if(t.shape_[j][i]){
-      if(t.check(i, j)){
-        if(y + j < 0){
+for(int i = 0; i < t.size(); i++){ // i - > y로 
+    for(int j = 0; j < t.size(); j++){ // j -> x로 
+      if(t.check(j, i)){
+        if(y + i >= BOARD_HEIGHT){
+          return true;
+        }
+        if(x + j < 0 || x + j >= BOARD_WIDTH){
+          return true;
+        }
+        if(board_[x + i][y + j]){
           return true;
         }
       }
@@ -242,22 +252,19 @@ bool Game::checkWallTetromino(Tetromino t, int x, int y){
         if board_[y + j][x + i] == true라면
           return true
   */
- for(int i = 0; i < t.size(); i++){
-   for(int j = 0; j < t.size(); j++){
-     if(t.check(i, j)){
-       if(x + i < 0 || x + i >= BOARD_WIDTH){
-         return true;
-       }
-       if(y + j < 0 || y + j >= BOARD_HEIGHT){
-         return true;
-       }
-       if(board_[y + j][x + i]){
-         return true;
-       }
-     }
-   }
- }
- return false;
+ for(int i = 0; i < t.size(); i++){ // i - > y로 
+    for(int j = 0; j < t.size(); j++){ // j -> x로 
+      if(t.check(j, i)){
+        if(x + j < 0 || x + j >= BOARD_WIDTH){
+          return true;
+        }
+        if(board_[x + i][y + j]){
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 
 }
 
@@ -275,22 +282,18 @@ bool Game::checkProblemTetromino(Tetromino t, int x, int y){
   else
     return false
   */
- bool flag = false;
-  for(int i = 0; i < t.size(); i++){
-    for(int j = 0; j < t.size(); j++){
+  for(int i = 0; i < t.size(); i++){ // i - > y로 
+    for(int j = 0; j < t.size(); j++){ // j -> x로 
       if(t.check(i, j)){
-        if(y + j < 0){
+        if(y + i >= BOARD_HEIGHT){
           return true;
         }
-       if(x + i < 0 || x + i >= BOARD_WIDTH){
-         return true;
-       }
-       if(y + j < 0 || y + j >= BOARD_HEIGHT){
-         return true;
-       }
-       if(board_[x + i][ y + j]){
-         return true;
-       }
+        if(x + j < 0 || x + j >= BOARD_WIDTH){
+          return true;
+        }
+        if(board_[x + i][y + j]){
+          return true;
+        }
       }
     }
   }
@@ -328,11 +331,12 @@ void Game::keyEvent(){
     */
    while(1){
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
-      for(int i = 0; i<currentTetrominoObject.size(); i++){
-        for(int j = 0; j<currentTetrominoObject.size(); j++){
-          board_[currentTetrominoX + i][currentTetrominoY + j] = true;
-        }
-      }
+      // for(int i = 0; i<currentTetrominoObject.size(); i++){
+      //   for(int j = 0; j<currentTetrominoObject.size(); j++){
+      //     board_[currentTetrominoX + i][currentTetrominoY + j] = true;
+      //   }
+      // }
+      markTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY - 1);
       this->canHold = true;
       checkLine();
       initTetromino();
@@ -374,6 +378,7 @@ void Game::keyEvent(){
       holdTetrominoObject = *(currentTetrominoObject.original());
       currentTetrominoObject = nextTetrominoObject;
       createTetromino();
+      canHold = false; 
     }
     Tetromino temp = holdTetrominoObject;
     holdTetrominoObject = *(currentTetrominoObject.original());
@@ -399,7 +404,7 @@ void Game::keyEvent(){
 }
 // 지워진 라인 개수를 그린다.
 void Game::drawEraseLine(){
-  console::draw(0, BOARD_HEIGHT + 4, "ERASE LINE : " + std::to_string(eraseLine));
+  console::draw(0, BOARD_HEIGHT + 2, std::to_string(LINES - eraseLine)+ " lines left");
 }
   // 게임 끝 (n = 0: 승리, n = 1: 패배)
 void Game::drawEnd(int n){
@@ -438,10 +443,11 @@ void Game::drawTime(int n){
     strmilsec = "0" + strmilsec;
   }
   if(n == 0){ // n = 0 : 보드 밑에 시간 출력
-    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, BOARD_HEIGHT + 2 + 1, strmin + ":" + strsec + ":" + strmilsec);
-  }if(n == 1){ // n = 1 : 게임 종료시의 시간 출력
-    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, (BOARD_HEIGHT / 2) + 2, strmin + ":"  + strsec + ":" + strmilsec);
+    console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 1, BOARD_HEIGHT + 3, strmin + ":" + strsec + ":" + strmilsec);
   }
+  // }if(n == 1){ // n = 1 : 게임 종료시의 시간 출력
+  //   console::draw((BOARD_WIDTH / 2) - ((2 + 1 + 2 + 1 + 2) / 2) + 2, (BOARD_HEIGHT / 2) + 2, strmin + ":"  + strsec + ":" + strmilsec);
+  // }
 }
 void Game::drawBoard(){
   for(int i = 0; i<BOARD_WIDTH; i++){
@@ -454,19 +460,26 @@ void Game::drawBoard(){
 }
 // 게임 화면을 그린다.
 void Game::draw(){
-  console::drawBox(0, 0, BOARD_WIDTH +2, BOARD_HEIGHT + 2);
-  console::drawBox(14, 0, 19, 5);
-  console::drawBox(21, 0, 26, 5);
-  console::draw(15, 0, "next");
-  console::draw(22, 0, "hold");
-  
+  console::drawBox(0, 0, BOARD_WIDTH + 1, BOARD_HEIGHT + 1);
+  console::drawBox(13, 0, 19, 5);
+  console::drawBox(20, 0, 26, 5);
+  console::draw(14, 0, "next");
+  console::draw(21, 0, "hold");
+  drawShadowTetromino();
   drawBoard();
   currentTetrominoObject.drawAt(BLOCK_STRING, currentTetrominoX + 1, currentTetrominoY + 1);
-  nextTetrominoObject.drawAt(BLOCK_STRING, 15, 1);
+
+  if(nextTetrominoObject.size() == 2){
+    nextTetrominoObject.drawAt(BLOCK_STRING, 15, 2);
+  }else{
+    nextTetrominoObject.drawAt(BLOCK_STRING, 15, 2);
+  }
+  
   if(holded){
-    holdTetrominoObject.drawAt(BLOCK_STRING, 23, 1);
+    holdTetrominoObject.drawAt(BLOCK_STRING, 22, 2);
   }
   drawEraseLine();
+  
   drawTime(0);
 }
 

@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# 
+problem
+
 # Compiled Object files
 *.slo
 *.lo

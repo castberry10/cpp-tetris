@@ -9,15 +9,28 @@ Tetromino::Tetromino(std::string name, int size, std::string shape)
     size_ = size;     // 테트로미노의 사이즈
     original_ = this; // 회전되지 않은 원래 테트로미노 객체를 저장하는 포인터
     int index = 0;    // shape 문자열의 인덱스
-    for (int y = 0; y < size; y++)
-    { //
-        for (int x = 0; x < size; x++)
+    for (int x = 0; x < size; x++)
+    { 
+        for (int y = 0; y < size; y++)
         {
-            shape_[x][y] = (shape[index] == 'O'); // 블록이 존재한다면 O를 통해 표시하고 아니라면 X를 통해 표시한다.
+            shape_[y][x] = (shape[index] == 'O'); // 블록이 존재한다면 O를 통해 표시하고 아니라면 X를 통해 표시한다.
             index++;
         }
     }
 }
+/*
+XXXX
+OOOO
+XXXX
+XXXX
+
+XOXX
+XOXX
+XOXX
+XOXX
+
+
+*/
 // 각 테트로미노 종류에 대한 선언
 // cpp 파일에서 Tetromino Tetromino::I(...); 와 같이 구현한다
 // static Tetromino I, O, T, S, Z, J, L;
@@ -71,11 +84,13 @@ Tetromino Tetromino::rotatedCCW(){
 // 화면의 x, y 위치에 s 문자열로  테트로미노를 그린다
 // x y 가 테트로미노의 좌측 상단이라 한다면. 
 void Tetromino::drawAt(std::string s, int x, int y){ 
-    for(int i = 0; i < size_ ; i++){
-        for(int j = 0; j < size_; j++){
-            if(shape_[i][j]){
+    for(int i = 0; i < size_ ; i++){ // i -> y
+        for(int j = 0; j < size_; j++){ // j -> x
+            if(shape_[j][i]){
                 console::draw(j + x, i + y, s); // 이거 실제로 이 좌표가 맞는지는 확인해봐야함
             }
+
+
         }
     }
 }
