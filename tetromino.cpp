@@ -39,16 +39,11 @@ Tetromino Tetromino::rotatedCW(){
             data[col][size_ - 1 - row] = shape_[row][col];
         }
     }
-    // 회전된 테트로미노의 모양을 문자열로 변환
-    for(int i = 0; i<size_; i++){
-        for(int j = 0; j<size_; j++){
-            if(data[i][j]){
-                createString += "O";
-            }else{
-                createString += "X";
-            }
+    for (int row = 0; row < size_; ++row) {
+        for (int col = 0; col < size_; ++col) {
+            shape_[row][col] = data[row][col];
         }
-    } 
+    }
     // 회전된 테트로미노의 모양을 기반으로 새로운 Tetromino 객체 생성
     return Tetromino(*this);
 }
@@ -61,6 +56,11 @@ Tetromino Tetromino::rotatedCCW(){
     for (int row = 0; row < size_; ++row) {
         for (int col = 0; col < size_; ++col) {
             data[size_ - 1 - col][row] = shape_[row][col];
+        }
+    }
+    for (int row = 0; row < size_; ++row) {
+        for (int col = 0; col < size_; ++col) {
+            shape_[row][col] = data[row][col];
         }
     }
 
