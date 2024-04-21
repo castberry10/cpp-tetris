@@ -215,7 +215,7 @@ bool Game::checkFloorTetromino(Tetromino t, int x, int y){
   for(int i = 0; i < t.size(); i++){
     for(int j = 0; j < t.size(); j++){
       // if(t.shape_[j][i]){
-      if(t.check(j, x)){
+      if(t.check(i, j)){
         if(y + j < 0){
           return true;
         }
@@ -244,7 +244,7 @@ bool Game::checkWallTetromino(Tetromino t, int x, int y){
   */
  for(int i = 0; i < t.size(); i++){
    for(int j = 0; j < t.size(); j++){
-     if(t.check(j, x)){
+     if(t.check(i, j)){
        if(x + i < 0 || x + i >= BOARD_WIDTH){
          return true;
        }
@@ -327,7 +327,7 @@ void Game::keyEvent(){
      }
     */
    while(1){
-    if(checkFloorTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
+    if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
       for(int i = 0; i<currentTetrominoObject.size(); i++){
         for(int j = 0; j<currentTetrominoObject.size(); j++){
           board_[currentTetrominoX + i][currentTetrominoY + j] = true;
@@ -339,7 +339,7 @@ void Game::keyEvent(){
       break;
     }
     else{
-      this->currentTetrominoY++;
+      currentTetrominoY++;
     }
    }
   }
@@ -369,24 +369,30 @@ void Game::keyEvent(){
     }
     */
    if(canHold){
+    if(holded==false){
+      holded = true;
+      holdTetrominoObject = *(currentTetrominoObject.original());
+      currentTetrominoObject = nextTetrominoObject;
+      createTetromino();
+    }
     Tetromino temp = holdTetrominoObject;
     holdTetrominoObject = *(currentTetrominoObject.original());
     currentTetrominoObject = temp;
     canHold = false;
+    initTetromino();
    }
   }
   else if(console::key(console::K_Z)){
     //반시계 방향 회전
     currentTetrominoObject = currentTetrominoObject.rotatedCCW();
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
-      console::log("problem");
       currentTetrominoObject = currentTetrominoObject.rotatedCW();
     }
   }
   else if(console::key(console::K_X)){
     //시계 방향 회전
+    currentTetrominoObject = currentTetrominoObject.rotatedCW();
     if(checkProblemTetromino(currentTetrominoObject, currentTetrominoX, currentTetrominoY)){
-      console::log("problem");
       currentTetrominoObject = currentTetrominoObject.rotatedCCW();
     }
   }
